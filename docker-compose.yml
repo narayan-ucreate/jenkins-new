@@ -1,10 +1,11 @@
 version: '2'
 services:
   pgsql:
+      container_name: postgrescontainer
       image: postgres:10.3-alpine
       environment:
         POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: test
+        POSTGRES_DB: test1
       ports:
         - "5432:5432"
 
