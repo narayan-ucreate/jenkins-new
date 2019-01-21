@@ -6,8 +6,15 @@ services:
       environment:
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: test123
+      entrypoint:
+        sh -c "
+                      echo 'CREATE DATABASE IF NOT EXISTS firstDB;' > /docker-entrypoint-initdb.d/init.sql;
+                      /docker-entrypoint-initdb.d/init-user-db.sh --character-set-server=utf8
+                    "
+
       ports:
-        - "5432:5432"
+        - "5433:5432"
+
 
   pgadmin:
       image: dpage/pgadmin4
