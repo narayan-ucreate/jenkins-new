@@ -5,7 +5,7 @@ services:
       image: postgres:10.3-alpine
       environment:
         POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: test1
+        POSTGRES_DB: test123
       ports:
         - "5432:5432"
 

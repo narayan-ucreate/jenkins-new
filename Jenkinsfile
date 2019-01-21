@@ -9,7 +9,7 @@ pipeline {
         DB_CONNECTION='pgsql'
         DB_HOST='ec2-13-232-154-105.ap-south-1.compute.amazonaws.com'
         DB_PORT='5432'
-        DB_DATABASE='test'
+        DB_DATABASE='test123'
         DB_USERNAME='postgres'
         DB_PASSWORD='postgres'
         REPO_URL='narayan-ucreate/jenkins'
