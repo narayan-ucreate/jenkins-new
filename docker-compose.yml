@@ -8,8 +8,7 @@ services:
         POSTGRES_DB: test123
       entrypoint:
         sh -c "
-                      echo 'CREATE DATABASE IF NOT EXISTS firstDB;' > /docker-entrypoint-initdb.d/init.sql;
-                      /docker-entrypoint-initdb.d/init-user-db.sh --character-set-server=utf8
+                     echo 'hi'
                     "
 
       ports:
