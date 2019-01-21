@@ -1,0 +1,19 @@
+version: '2'
+services:
+  pgsql:
+      image: postgres:10.3-alpine
+      environment:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: test
+      ports:
+        - 5432
+
+  pgadmin:
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+        PGADMIN_DEFAULT_PASSWORD: admin@pgadmin.com
+      ports:
+        - 80
+      volumes:
+        - ./pgadmin:/var/lib/pgadmin
