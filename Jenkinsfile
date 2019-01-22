@@ -41,17 +41,20 @@ pipeline {
          }
         stage('Database Setup') {
              steps {
-                 sh 'docker-compose -f docker-compose.yml up -d pgsql'
-                 sh 'docker-compose -f docker-compose.yml up -d pgadmin'
                  script {
                     def container_id = sh(script: 'docker ps -aqf "name=postgrescontainer"', returnStdout: true)
                     container_id = container_id.replaceAll("\\s","")
+                    if (container_id) {
+                    } else {
+                       sh 'docker-compose -f docker-compose.yml up -d pgsql'
+                    }
                     def exist =  sh (script: 'docker exec -i '+container_id+'  psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname =\''+env.DB_DATABASE+'\'"', returnStdout: true)
                     exist = exist.replaceAll("\\s","")
                     if (exist != '1') {
                        sh 'docker exec -i ' + container_id + ' psql -U postgres -c "CREATE DATABASE  "'+env.DB_DATABASE+'";"'
                     }
                  }
+                 sh 'docker-compose -f docker-compose.yml up -d pgadmin'
              }
         }
         stage('Unit Testing') {
