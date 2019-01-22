@@ -9,14 +9,15 @@ pipeline {
         DB_CONNECTION='pgsql'
         DB_HOST='ec2-13-232-154-105.ap-south-1.compute.amazonaws.com'
         DB_PORT='5432'
-        DB_DATABASE='test123'
+        DB_DATABASE='test12345'
         DB_USERNAME='postgres'
         DB_PASSWORD='postgres'
         REPO_URL='narayan-ucreate/jenkins'
         ACCESS_TOKEN= credentials('JENKINS_ACCESS_TOKEN')
+        HEROKU_API_KEY= credentials('HEROKU_API_KEY')
         PROJECT_NAME='ucreate-review-tool'
-        ERROR_MESSAGE = ''
-
+        ERROR_MESSAGE= ''
+        HEROKU_APP_NAME='jenkins-new'
     }
     stages {
          stage('Check Rejected Code') {
@@ -41,6 +42,15 @@ pipeline {
              steps {
                  sh 'docker-compose -f docker-compose.yml up -d pgsql'
                  sh 'docker-compose -f docker-compose.yml up -d pgadmin'
+                 script {
+                    def container_id = sh(script: 'docker ps -aqf "name=postgrescontainer"', returnStdout: true)
+                    container_id = container_id.replaceAll("\\s","")
+                    def exist =  sh (script: 'docker exec -i '+container_id+'  psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname =\''+env.DB_DATABASE+'\'"', returnStdout: true)
+                    exist = exist.replaceAll("\\s","")
+                    if (exist != '1') {
+                       sh 'docker exec -i ' + container_id + ' psql -U postgres -c "CREATE DATABASE  "'+env.DB_DATABASE+'";"'
+                    }
+                 }
              }
         }
         stage('Unit Testing') {
@@ -59,6 +69,7 @@ pipeline {
         success {
              updateGithubStatus('success')
              notifyToSlack('success', username, commit_message)
+             deployToHeroku()
 
         }
         failure {
@@ -78,6 +89,6 @@ void notifyToSlack(status, username, commit_message)
 }
 
 void deployToHeroku() {
-sh 'git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:refs/heads/master'
+sh 'git push --force https://heroku:'+env.HEROKU_API_KEY+'@git.heroku.com/' + env.HEROKU_APP_NAME + '.git HEAD:refs/heads/master'
 }
 
