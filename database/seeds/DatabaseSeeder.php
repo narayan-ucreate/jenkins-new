@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         \DB::table('users')->insert([
            [
                'name' => 'Narayan',
-               'email' => 'sharmanarayan1991@gmail.com',
+               'email' => 'sharmanarayan1991'.rand().'@gmail.com',
                'password' => '1234567896',
            ]
         ]);
